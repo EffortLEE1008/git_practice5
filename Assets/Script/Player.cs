@@ -5,12 +5,18 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     Rigidbody2D my_rigid;
-    float speed=100f;
+    float flyspeed=10f;
+
+    [SerializeField]
+    float fire_delay=0;
 
     public bool hit_rightbox;
     public bool hit_leftbox;
     public bool hit_topbox;
     public bool hit_bottombox;
+
+    [SerializeField]
+    GameObject bullet;
 
     // Start is called before the first frame update
 
@@ -30,14 +36,32 @@ public class Player : MonoBehaviour
         if ((hit_topbox && v == 1) || (hit_bottombox && v == -1))
             v = 0;
 
-
         Vector3 next_pos = new Vector3(h, v, 0);
         next_pos = next_pos.normalized;
 
 
-        my_rigid.MovePosition(transform.position + next_pos * speed * Time.deltaTime);
+        my_rigid.MovePosition(transform.position + next_pos * flyspeed * Time.deltaTime);
+
+        fire_delay = fire_delay + Time.deltaTime;
+        if (fire_delay > .15f)
+        {
+            fire();
+            fire_delay = 0;
+           
+        }
+        //Debug.Log("Fire_delayÀÇ °ªÀº? : " + fire_delay);
+
         
     }
+    void fire()
+    {
+        GameObject fire = Instantiate(bullet, transform.position, transform.rotation);
+        Rigidbody2D rigid = fire.GetComponent<Rigidbody2D>();
+        rigid.AddForce(Vector2.up * 500);
+
+    }
+
+
 
 
     private void OnTriggerEnter2D(Collider2D collision)
