@@ -6,10 +6,14 @@ public class Enemy : MonoBehaviour
 {
     Rigidbody2D my_rigid;
     
-    float as_speed = .6f;
+    [SerializeField]
+    float as_speed = 1f;
 
-    float health = 10;
+    float health = 30;
     Bullet bullet;
+
+    [SerializeField]
+    GameObject player;
     
 
     private void Awake()
@@ -31,7 +35,9 @@ public class Enemy : MonoBehaviour
         if(collision.transform.tag == "PlayerBullet")
         {
             bullet = collision.gameObject.GetComponent<Bullet>();
+            
             hit(bullet.damage);
+
             Destroy(collision.gameObject);
         }
 
@@ -42,10 +48,12 @@ public class Enemy : MonoBehaviour
     void hit(float damage)
     {
         health = health - damage;
-        Debug.Log("운석이 데미지를 입었습니다 남은 체력 : " + health);
+        //Debug.Log("운석이 데미지를 입었습니다 남은 체력 : " + health);
 
         if (health <= 0)
         {
+            Player playerlogic = player.GetComponent<Player>();
+            playerlogic.score += 500;
             Destroy(gameObject);
         }
     }

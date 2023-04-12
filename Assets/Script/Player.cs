@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     Rigidbody2D my_rigid;
+    [SerializeField]
     float flyspeed=10f;
 
     [SerializeField]
@@ -15,15 +16,27 @@ public class Player : MonoBehaviour
     public bool hit_topbox;
     public bool hit_bottombox;
 
+    public int hp = 3;
+    
+    public float score;
+    
+
     [SerializeField]
     GameObject bullet;
 
-    // Start is called before the first frame update
+    public GameManager manager;
 
-    void Start()
+   
+
+    // Start is called before the first frame update
+    private void Awake()
     {
+        
         my_rigid = GetComponent<Rigidbody2D>();
+        
     }
+
+
 
     // Update is called once per frame
     void Update()
@@ -47,6 +60,7 @@ public class Player : MonoBehaviour
         {
             fire();
             fire_delay = 0;
+            
            
         }
         //Debug.Log("Fire_delayÀÇ °ªÀº? : " + fire_delay);
@@ -89,6 +103,27 @@ public class Player : MonoBehaviour
                     break;
 
             }
+        }
+        else if(collision.gameObject.tag == "Enemy")
+        {
+            hp--;
+            manager.LifeImageUpdate(hp);
+
+            if (hp == 0)
+            {
+                manager.ActiveGameover();
+
+            }
+            else
+            {
+
+                manager.ReSpawnPlayer();
+
+            }
+
+            gameObject.SetActive(false);
+            Destroy(collision.gameObject);
+
         }
 
 
